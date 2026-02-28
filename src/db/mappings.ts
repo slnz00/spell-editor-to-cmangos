@@ -175,8 +175,16 @@ export const dbMappings = {
     "StartRecoveryTime": "StartRecoveryTime",
     "MaxTargetLevel": "MaximumTargetLevel",
     "SpellFamilyName": "SpellFamilyName",
-    "SpellFamilyFlags": "SpellFamilyFlags",
-    "SpellFamilyFlags2": "SpellFamilyFlags1",
+    "SpellFamilyFlags": {
+      value: (entry) => {
+        const flags = Number(entry.SpellFamilyFlags)
+        const flags1 = Number(entry.SpellFamilyFlags1)
+        const combined = BigInt(flags >>> 0) | (BigInt(flags1 >>> 0) << 32n);
+
+        return combined.toString();
+      }
+    },
+    "SpellFamilyFlags2": "SpellFamilyFlags2",
     "MaxAffectedTargets": "MaximumAffectedTargets",
     "DmgClass": "DamageClass",
     "PreventionType": "PreventionType",
@@ -210,6 +218,6 @@ export const dbMappings = {
 type TableName = string;
 type ColumnName = string;
 export type DBMapping<
-  TFrom extends Record<ColumnName, any> = Record<ColumnName, any>,
-  TTo extends Record<ColumnName, any> = Record<ColumnName, any>
-> = Record<keyof TFrom, keyof TTo | null | { value: any }>;
+  TTo extends Record<ColumnName, any> = Record<ColumnName, any>,
+  TFrom extends Record<ColumnName, any> = Record<ColumnName, any>
+> = Record<keyof TTo, keyof TFrom | null | { value: (entry: TFrom) => any }>;

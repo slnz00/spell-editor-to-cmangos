@@ -34,7 +34,7 @@ const toSqlOutput = <TTable extends keyof typeof dbMappings>(
       return;
     }
 
-    const value = typeof editorColumn === 'string' ? editorEntry[editorColumn] : editorColumn.value;
+    const value = typeof editorColumn === 'string' ? editorEntry[editorColumn] : editorColumn.value(editorEntry);
 
     if (value === undefined) {
       return;
